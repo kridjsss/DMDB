@@ -33,57 +33,55 @@
 
 </head>
 <body data-ng-controller="moduleController">
-	<%-- <jsp:include page="modules.jsp" />--%>
-	<header class="w3-container w3-card-4 w3-theme w3-top">
-		<div class="w3-row">
-			<div class="w3-col" style="width: 80%">
-				<h1>
-					<i class="w3-opennav fa fa-bars" data-ng-click="nav_openAndClose()"></i>
-					<data-pd-title data-ng-style="{'margin-left':marginleft}">
-					</data-pd-title>
-				</h1>
-			</div>
-			<div class="w3-col"
-				style="width: 20%; padding-top: 20px; padding-right: -70px">
-				<a href='${pageContext.request.contextPath}/logout'>Logout</a>
-			</div>
-		</div>
-
-
-	</header>
-
-	<nav class="w3-sidenav w3-card-2 w3-white w3-top" style="width: 30%;"
-		data-ng-show="showNavigation">
+	<div class="w3-top">
+		<ul class="w3-navbar w3-red w3-large">
+			<li><img class="w3-circle"
+				src="${pageContext.request.contextPath}/assets/images/winstream_min_logo.png"
+				alt="avatar" style="width: 30px"></li>
+			<li data-pd-title></li>
+			<li><a href="#" data-ng-click='showDashboard=!showDashboard'><i
+					class="fa fa-tachometer fa-fw" aria-hidden="true"></i>&nbsp;Dashboard</a></li>
+			<li><a href="#"><i class="fa fa-cog fa-fw"
+					aria-hidden="true"></i>&nbsp;Configure</a></li>
+			<li  data-ng-mouseleave='toggleModuleDropdown()' class="w3-dropdown-click"><a href="#" data-ng-click='toggleModuleDropdown()'><i
+					class="fa fa-pencil fa-fw" aria-hidden="true"></i>&nbsp;Modules</a>
+				<div id='moduleDropdownId' class="w3-dropdown-content w3-white w3-card-4" data-ng-style="{'height':'223px','overflow-y':'scroll'}">
+					<a href="#" data-ng-repeat="module in modules" data-ng-click="drawDynamicChart(module.name)">{{module.name}}</a>
+				</div></li>
+			<li><a href="${pageContext.request.contextPath}/logout"><i
+					class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a></li>
+		</ul>
+	</div>
+	<%-- 	
+	<nav class="w3-sidenav w3-card-2 w3-white w3-top" style="width: 20%;">
 		<div class="w3-container w3-theme-d2">
-			<span data-ng-click="nav_openAndClose()"
-				class="w3-closenav w3-right w3-xlarge">x</span> <br>
+			<!-- 			<span data-ng-click="nav_openAndClose()"
+				class="w3-closenav w3-right w3-xlarge">x</span> <br> -->
 			<div class="w3-padding w3-center">
 				<img class="w3-circle"
 					src="${pageContext.request.contextPath}/assets/images/winstream_min_logo.png"
-					alt="avatar" style="width: 30px">Modules<span
-					class="w3-badge w3-green">{{modules.length}}</span>
+					alt="avatar" style="width: 30px">
 			</div>
 		</div>
 		<br>
-		<div data-ng-repeat="module in modules">
+		
+		<a href='#' class='dropbtn' data-ng-click='showDashboard=!showDashboard'><i class="fa fa-tachometer fa-fw" aria-hidden="true"></i>&nbsp;Dashboard</a>
+		<a href='#' class='dropbtn'><i class="fa fa-cog fa-fw" aria-hidden="true"></i>&nbsp;Configuration</a>
+		<a class="dropbtn" href="#" data-ng-click='displayModules=!displayModules'><i class="fa fa-pencil fa-fw" aria-hidden="true"></i> Modules<span
+					class="w3-badge w3-grey">{{modules.length}}</span></a>
+		<div data-ng-repeat="module in modules" class='w3-padding-ver-6' data-ng-show='displayModules'>
 			<a href="#" class="dropbtn"
 				data-ng-click="show=!show;drawDynamicChart(module.name)">{{module.name}}</a>
 			<div class="w3-indigo w3-padding-ver-8" data-ng-show="show"
 				data-ng-repeat="menu in module.menu">
 				<a href="#"
 					data-ng-click="showme=!showme;drawDynamicChart(menu.value)">{{menu.value}}</a>
-				<!-- 				<div class="w3-brown w3-padding-ver-16"
-					data-ng-repeat="submenu in menu.submenu" data-ng-show="showme">
-					<a href="#" data-ng-click='drawDynamicChart(submenu)'>{{submenu}}</a>
-				</div> -->
 			</div>
 		</div>
-	</nav>
+	</nav> --%>
 
-	<div data-ng-style="{'margin-top':'75px'}">
+	<div data-ng-style="{'margin-top':'75px'}" data-ng-show='showDashboard'>
 		<div class="w3-row" id="dashboard_div">
-			<!-- 			<span data-ng-click="chartInfo=!chartInfo"
-				class="w3-closenav w3-right w3-xlarge">x</span> -->
 			<div class="w3-col m6">
 				<!--Divs that will hold each control and chart-->
 				<div id="moduleString_filterId"></div>
@@ -91,18 +89,19 @@
 				<div id="moduleNumber_filterId"></div>
 
 			</div>
-			<div class="w3-col m6" data-ng-show='dynamicChartContainer'
-				data-ng-style="{'border-width':'0px 1px 1px 1px','border-style':'solid','border-color':'black'}">
+			<div class="w3-col m6">
 				<div id="moduleType_filterId"></div>
 				<div id="dynamic_chartContainer"></div>
-				Choose Chart Type:<select name="chartType"
+				<span data-ng-show='dynamicChartContainer'>Choose Chart Type:<select
+					name="chartType"
 					data-ng-options="option.name for option in chartType.availableOptions track by option.id"
 					data-ng-model="chartType.selectedOption"
-					data-ng-change="drawDynamicChart(chartInfoValue)"></select>
+					data-ng-change="drawDynamicChart(chartInfoValue)"></select></span>
 			</div>
 		</div>
 	</div>
 	<footer class="w3-container w3-theme w3-bottom">Last Account
 		Activity: 1 hour ago</footer>
+
 </body>
 </html>

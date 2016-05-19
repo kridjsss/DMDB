@@ -8,7 +8,7 @@ var dashboard
 
 app.directive('pdTitle', function() {
 	return {
-		ristrict : 'E',
+		ristrict : 'AE',
 		template : "Data Migration Dashboard"
 	}
 });
@@ -36,7 +36,6 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 	};
 
 	$scope.dynamicChartContainer = false;
-
 	$scope.drawModuleChart = function() {
 		moduleData = google.visualization.arrayToDataTable(
 				$scope.chartsData.Modules, false);
@@ -60,7 +59,7 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 		});
 		// Create a pie chart, passing some options
 		moduleChart = new google.visualization.ChartWrapper({
-			'chartType' : 'PieChart',
+			'chartType' : 'BarChart',
 			'containerId' : 'module_chartContainer',
 			'options' : {
 				'width' : 520,
@@ -164,15 +163,6 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 		name : "Service Qualification",
 	} ];
 
-	$scope.showNavigation = false;
-	$scope.nav_openAndClose = function() {
-		$scope.showNavigation = !$scope.showNavigation
-		if ($scope.showNavigation) {
-			$scope.marginleft = '390px';
-		} else {
-			$scope.marginleft = '0px';
-		}
-	}
 	$scope.chartType = {
 		availableOptions : [ {
 			id : '1',
@@ -192,7 +182,7 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 		} ],
 		selectedOption : {
 			id : '1',
-			name : 'PieChart'
+			name : 'ColumnChart'
 		}
 	};
 
@@ -213,6 +203,14 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 			name : 'Not-Migrated'
 		}
 	};
+	$scope.toggleModuleDropdown = function(){
+			var x = document.getElementById("moduleDropdownId");
+			if (x.className.indexOf("w3-show") == -1) {
+				x.className += " w3-show";
+			} else {
+				x.className = x.className.replace(" w3-show", "");
+			}
+	}
 });
 
 function moduleHandler() {
