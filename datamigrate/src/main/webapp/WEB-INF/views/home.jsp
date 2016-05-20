@@ -15,12 +15,18 @@
 	href="${pageContext.request.contextPath}/assets/css/font-awesome.min.css">
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/assets/css/custom.css">
+
 <script
 	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/assets/js/gcharts.js"></script>
-<script
+<script type="text/javascript"
 	src="${pageContext.request.contextPath}/assets/js/ag.application.js"></script>
+
+<script type="text/javascript"
+	src="${pageContext.request.contextPath}/assets/js/soyutils.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/dashboard.js"></script>
+
 <script type="text/javascript"
 	src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
@@ -33,74 +39,145 @@
 
 </head>
 <body data-ng-controller="moduleController">
-	<div class="w3-top">
-		<ul class="w3-navbar w3-red w3-large">
+	<header class="w3-top" data-ng-style="{'background-color':'#336699'}">
+		<ul class="w3-navbar w3-large">
 			<li><img class="w3-circle"
 				src="${pageContext.request.contextPath}/assets/images/winstream_min_logo.png"
 				alt="avatar" style="width: 30px"></li>
 			<li data-pd-title></li>
-			<li><a href="#" data-ng-click='showDashboard=!showDashboard'><i
-					class="fa fa-tachometer fa-fw" aria-hidden="true"></i>&nbsp;Dashboard</a></li>
-			<li><a href="#"><i class="fa fa-cog fa-fw"
-					aria-hidden="true"></i>&nbsp;Configure</a></li>
-			<li  data-ng-mouseleave='toggleModuleDropdown()' class="w3-dropdown-click"><a href="#" data-ng-click='toggleModuleDropdown()'><i
+			<li><a href="#" data-ng-click='showDashboard($event)'
+				class="tablink"><i class="fa fa-tachometer fa-fw"
+					aria-hidden="true"></i>&nbsp;Dashboard</a></li>
+			<li><a href="#" data-ng-click='showConfiguration($event)'
+				class="tablink"><i class="fa fa-cog fa-fw" aria-hidden="true"></i>&nbsp;Configuration</a></li>
+			<li data-ng-mouseleave='toggleModuleDropdown()'
+				class="w3-dropdown-click"><a href="#"
+				data-ng-mouseover='toggleModuleDropdown()' class="tablink"><i
 					class="fa fa-pencil fa-fw" aria-hidden="true"></i>&nbsp;Modules</a>
-				<div id='moduleDropdownId' class="w3-dropdown-content w3-white w3-card-4" data-ng-style="{'height':'223px','overflow-y':'scroll'}">
-					<a href="#" data-ng-repeat="module in modules" data-ng-click="drawDynamicChart(module.name)">{{module.name}}</a>
+				<div id='moduleDropdownId'
+					class="w3-dropdown-content w3-white w3-card-4"
+					data-ng-style="{'height':'223px','overflow-y':'scroll'}">
+					<a href="#" data-ng-repeat="module in modules" class="tablink"
+						data-ng-click="drawDynamicChart(module.name,$event)">{{module.name}}</a>
 				</div></li>
 			<li><a href="${pageContext.request.contextPath}/logout"><i
 					class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a></li>
 		</ul>
-	</div>
-	<%-- 	
-	<nav class="w3-sidenav w3-card-2 w3-white w3-top" style="width: 20%;">
-		<div class="w3-container w3-theme-d2">
-			<!-- 			<span data-ng-click="nav_openAndClose()"
-				class="w3-closenav w3-right w3-xlarge">x</span> <br> -->
-			<div class="w3-padding w3-center">
-				<img class="w3-circle"
-					src="${pageContext.request.contextPath}/assets/images/winstream_min_logo.png"
-					alt="avatar" style="width: 30px">
-			</div>
+	</header>
+	<div class='w3-container content-heightdiv' id="dashboard_div"
+		data-ng-show='showDashboardContainer'>
+		<div class='w3-row-padding'>
+			<script type="text/javascript">
+				document.write(dashboard.tiles.modules());
+			</script>
+			<script type="text/javascript">
+				document.write(dashboard.tiles.phases());
+			</script>
 		</div>
-		<br>
-		
-		<a href='#' class='dropbtn' data-ng-click='showDashboard=!showDashboard'><i class="fa fa-tachometer fa-fw" aria-hidden="true"></i>&nbsp;Dashboard</a>
-		<a href='#' class='dropbtn'><i class="fa fa-cog fa-fw" aria-hidden="true"></i>&nbsp;Configuration</a>
-		<a class="dropbtn" href="#" data-ng-click='displayModules=!displayModules'><i class="fa fa-pencil fa-fw" aria-hidden="true"></i> Modules<span
-					class="w3-badge w3-grey">{{modules.length}}</span></a>
-		<div data-ng-repeat="module in modules" class='w3-padding-ver-6' data-ng-show='displayModules'>
-			<a href="#" class="dropbtn"
-				data-ng-click="show=!show;drawDynamicChart(module.name)">{{module.name}}</a>
-			<div class="w3-indigo w3-padding-ver-8" data-ng-show="show"
-				data-ng-repeat="menu in module.menu">
-				<a href="#"
-					data-ng-click="showme=!showme;drawDynamicChart(menu.value)">{{menu.value}}</a>
-			</div>
-		</div>
-	</nav> --%>
-
-	<div data-ng-style="{'margin-top':'75px'}" data-ng-show='showDashboard'>
-		<div class="w3-row" id="dashboard_div">
-			<div class="w3-col m6">
-				<!--Divs that will hold each control and chart-->
-				<div id="moduleString_filterId"></div>
-				<div id="module_chartContainer"></div>
-				<div id="moduleNumber_filterId"></div>
-
-			</div>
-			<div class="w3-col m6">
-				<div id="moduleType_filterId"></div>
-				<div id="dynamic_chartContainer"></div>
-				<span data-ng-show='dynamicChartContainer'>Choose Chart Type:<select
-					name="chartType"
-					data-ng-options="option.name for option in chartType.availableOptions track by option.id"
-					data-ng-model="chartType.selectedOption"
-					data-ng-change="drawDynamicChart(chartInfoValue)"></select></span>
-			</div>
+		<div class='w3-row-padding'>
+			<script type="text/javascript">
+				document.write(dashboard.tiles.errorData());
+			</script>
 		</div>
 	</div>
-	<footer class="w3-container w3-theme w3-bottom">Last Account
+	<div class="w3-container w3-border content-heightdiv"
+		data-ng-show="showModuleContainer">
+		<div id="moduleType_filterId"></div>
+		<div id="dynamic_chartContainer"></div>
+		<span>Choose Chart Type:<select name="chartType"
+			data-ng-options="option.name for option in chartType.availableOptions track by option.id"
+			data-ng-model="chartType.selectedOption"
+			data-ng-change="drawDynamicChart(chartInfoValue)"></select></span>
+	</div>
+
+	<div class="content-heightdiv"
+		data-ng-show='showConfigurationContainer'>
+		<div class="w3-row-padding">
+			<div class="w3-col m8 w3-border w3-container">
+				<table class="w3-table">
+					<caption>Dashboard Customization</caption>
+					<tr>
+						<td>Modules Data Left to Migrate</td>
+						<td><button class="w3-btn w3-white w3-border">Configure</button></td>
+					</tr>
+					<tr>
+						<td>Number of Phases Completed</td>
+						<td><button class="w3-btn w3-white w3-border">Configure</button></td>
+					</tr>
+					<tr>
+						<td>Total Application Data Left to Migrate</td>
+						<td><button class="w3-btn w3-white w3-border">Configure</button></td>
+					</tr>
+					<tr>
+						<td>Time Taken to Migrate Each Phase</td>
+						<td><button class="w3-btn w3-white w3-border">Configure</button></td>
+					</tr>
+				</table>
+			</div>
+			<div class="w3-container w3-col m4 w3-border">
+				<table class="w3-table">
+					<caption>Properties</caption>
+					<tr>
+						<td>Alignment</td>
+						<td><select
+							data-ng-options="option.name for option in tilesAlignment.availableOptions track by option.id"
+							data-ng-model="tilesAlignment.selectedOption">
+						</select></td>
+					</tr>
+					<tr>
+						<td>Filter</td>
+						<td><select
+							data-ng-options="option.name for option in chartFilters.availableOptions track by option.id"
+							data-ng-model="chartFilters.selectedOption"></select></td>
+					</tr>
+					<tr>
+						<td>Chart Type</td>
+						<td><select
+							data-ng-options="option.name for option in chartType.availableOptions track by option.id"
+							data-ng-model="chartType.selectedOption"></select></td>
+					</tr>
+					<tr>
+						<td>Chart Width</td>
+						<td><input type="number" size='10' min='200' max='400'
+							value='320' /> in px</td>
+					</tr>
+					<tr>
+						<td>Chart Height</td>
+						<td><input type='number' size='10' min='400' max='600'
+							value='400' /> in px</td>
+					</tr>
+					<tr>
+						<td>Title</td>
+						<td><span>How Much Data Left to Migrate</span></td>
+					</tr>
+					<tr>
+						<td>is3D</td>
+						<td><input type='checkbox' /></td>
+					</tr>
+					<tr>
+						<td>Legend</td>
+						<td><select><option>Left</option><option>Right</option></select></td>
+					</tr>
+					<tr>
+						<td>Enable</td>
+						<td><input type='checkbox' data-ng-model='enableSelected' /></td>
+					</tr>
+
+					<tr>
+						<th colspan="2" style="text-align: center; padding-top: 20px;"><button
+								class="w3-btn w3-white w3-border">Save</button></th>
+					</tr>
+
+				</table>
+			</div>
+
+		</div>
+
+	</div>
+
+
+	<footer class="w3-container w3-bottom"
+		data-ng-style="{'background-color':'#336699'}">Last Account
 		Activity: 1 hour ago</footer>
 
 </body>
