@@ -4,7 +4,9 @@
  * Welcome to Dashboard
  */
 {template .modules}
-  		<div class="w3-col m4 w3-border">
+  		<div class="w3-col m4 custom-chart-transition">
+  			<span onclick="this.parentElement.style.display='none'"
+					class="w3-closebtn"><i class="fa fa-trash-o" aria-hidden="true"></i></i></span>
 			<div id="moduleString_filterId"></div>
 			<div id="module_chartContainer"></div>
 			<div id="moduleNumber_filterId"></div>
@@ -14,7 +16,9 @@
  * Welcome to Dashboard
  */
 {template .phases}
-		<div class="w3-col m4 w3-border">
+		<div class="w3-col m4 custom-chart-transition">
+		  <span onclick="this.parentElement.style.display='none'"
+					class="w3-closebtn"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
 			<div id="phasesString_filterId"></div>
 			<div id="phases_chartContainer"></div>
 			<div id="phasesNumber_filterId"></div>
@@ -24,9 +28,23 @@
  * Welcome to Dashboard
  */
 {template .errorData}
-  		<div class="w3-col m4 w3-border">
+  		<div class="w3-col m4 custom-chart-transition">
+  		  	<span onclick="this.parentElement.style.display='none'"
+					class="w3-closebtn"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
 			<div id="dataFailedString_filterId"></div>
 			<div id="dataFailed_chartContainer"></div>
 			<div id="dataFailedNumber_filterId"></div>
+		</div>
+{/template}
+/**
+ * Welcome to Dashboard
+ */
+{template .phasesMigrationPlan}
+  		<div class="w3-col m4 custom-chart-transition">
+  		  	<span onclick="this.parentElement.style.display='none'"
+					class="w3-closebtn"><i class="fa fa-trash-o" aria-hidden="true"></i></span>
+			<div id="migrationPlanString_filterId"></div>
+			<div id="migrationPlan_chartContainer"></div>
+			<div id="migrationPlanNumber_filterId"></div>
 		</div>
 {/template}

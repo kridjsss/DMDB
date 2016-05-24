@@ -17,7 +17,8 @@ app.directive('pdTitle', function() {
 var moduleControllers = angular.module('moduleControllers', []);
 
 // defining the module controller
-moduleControllers.controller("moduleController", function($scope, $window) {
+moduleControllers.controller("moduleController", function($scope, $log) {
+	//$scope.$log  = $log
 	$scope.chartsData = {
 		"Modules" : [ [ 'Modules', 'Count' ], [ 'Proposal', 180000 ],
 				[ 'Quote', 1170 ], [ 'Order Enrichment', 2000 ],
@@ -35,11 +36,11 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 		"Phases" : [ [ 'Phases', 'Count' ], [ 'Phase1', 10000 ],
 				[ 'Phase2', 20000 ], [ 'Phase3', 30000 ] ],
 		"DataFailed" : [ [ 'Phases', 'Count' ], [ 'Phase1', 2000 ],
-				[ 'Phase2', 1500 ] ]
+				[ 'Phase2', 1500 ],['Phase3', 200 ] ],
+		"MigrationPlan":[['Phases','Name','Start','End'],['Phase1 Migration Plan','Phase1',new Date(2016,06,04),new Date(2016,06,28)],['Phase2 Migration Plan','Phase2',new Date(2016,07,01),new Date(2016,08,18)],['Phase3 Migration Plan','Phase3',new Date(2016,08,20),new Date(2016,09,28)],['Phase4 Migration Plan','Phase4',new Date(2016,10,01),new Date(2016,12,18)]]
 
 	};
-
-	$scope.dynamicChartContainer = false;
+	
 
 	$scope.createDashboard1 = function() {
 
@@ -68,7 +69,7 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 			'chartType' : 'BarChart',
 			'containerId' : 'module_chartContainer',
 			'options' : {
-				'width' : 320,
+				'width' : 360,
 				'height' : 400,
 				'pieSliceText' : 'value',
 				'legend' : 'right',
@@ -110,11 +111,10 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 			'chartType' : 'PieChart',
 			'containerId' : 'phases_chartContainer',
 			'options' : {
-				'width' : 320,
+				'width' : 360,
 				'height' : 400,
 				'pieSliceText' : 'value',
 				'legend' : 'left',
-				'is3D' : true,
 				'title' : "How Much Data Left to Migrate in Each Phase"
 			// 'chartArea': {'left': 25, 'top': 15, 'right': 0, 'bottom': 0}
 			}
@@ -142,28 +142,56 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 
 		// Create a Bar chart, passing some options
 		var dataFailedChart = new google.visualization.ChartWrapper({
-			'chartType' : 'BarChart',
+			'chartType' : 'LineChart',
 			'containerId' : 'dataFailed_chartContainer',
 			'options' : {
 				'width' : 320,
 				'height' : 400,
-				'pieSliceText' : 'value',
-				'legend' : 'left',
-				'is3D' : true,
-				'title' : "How Much Data Failed in Each Phase"
-			// 'chartArea': {'left': 25, 'top': 15, 'right': 0, 'bottom': 0}
+				'title' : "How Much Data Failed in Each Phase",
+				'colors':['#ff3333']
 			}
 		});
 		dashboard.bind(phasesFilter, dataFailedChart);
 		dashboard.draw(DataFailed);
 
 	}
-	
+	$scope.createDashboard4 = function() {
+
+		dashboard = new google.visualization.Dashboard(document
+				.getElementById('dashboard_div'));
+
+		var DataFailed = google.visualization.arrayToDataTable(
+				$scope.chartsData.MigrationPlan, false);
+
+		var phasesFilter = new google.visualization.ControlWrapper({
+			'controlType' : 'StringFilter',// StringFilter
+			'containerId' : 'migrationPlanString_filterId',
+			'options' : {
+				'filterColumnLabel' : 'Phases'
+			}
+		});
+
+		// Create a Bar chart, passing some options
+		var dataFailedChart = new google.visualization.ChartWrapper({
+			'chartType' : 'Timeline',
+			'containerId' : 'migrationPlan_chartContainer',
+			'options' : {
+				'width' : 400,
+				'height' : 400,
+				'timeline': { showRowLabels: false}
+			}
+		});
+		dashboard.bind(phasesFilter, dataFailedChart);
+		dashboard.draw(DataFailed);
+
+	}
+
 	$scope.drawModuleChart = function() {
 		
 		$scope.createDashboard1();
 		$scope.createDashboard2();
 		$scope.createDashboard3();
+		$scope.createDashboard4();
 	}
 
 	$scope.chartInfoValue = null;
@@ -171,11 +199,14 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 
 		if (!$scope.chartsData[value])
 			return;
+		if(!!evt)
+			$scope.activeTablink(evt)
+		
+		document.getElementById("modal01").style.display = "block";
 
-		$scope.activeTablink(evt)
-		$scope.showConfigurationContainer = false;
-		$scope.showDashboardContainer = false;
-		$scope.showModuleContainer = true;
+		//$scope.showConfigurationContainer = false;
+		//$scope.showDashboardContainer = false;
+		//$scope.showModuleContainer = true;
 		$scope.chartInfoValue = value;
 
 		// Create the data table.
@@ -312,13 +343,11 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 
 	$scope.showConfiguration = function(evt) {
 		$scope.showDashboardContainer = false;
-		$scope.showModuleContainer = false;
 		$scope.showConfigurationContainer = true;
 		$scope.activeTablink(evt);
 	}
 	$scope.showDashboard = function(evt) {
 		$scope.showConfigurationContainer = false;
-		$scope.showModuleContainer = false;
 		$scope.showDashboardContainer = true;
 		$scope.activeTablink(evt);
 	}
@@ -331,7 +360,13 @@ moduleControllers.controller("moduleController", function($scope, $window) {
 		}
 		evt.currentTarget.className += " w3-pink";
 	}
-
+	$scope.showDashboardContainer = true;
+	
+	$scope.showConfigProperties = false;
+	
+	$scope.showProperties = function(){
+		$scope.showConfigProperties = true
+	}
 });
 
 function moduleHandler() {

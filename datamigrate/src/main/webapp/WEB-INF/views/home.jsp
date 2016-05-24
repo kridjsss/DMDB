@@ -26,13 +26,15 @@
 <script type="text/javascript"
 	src="${pageContext.request.contextPath}/assets/js/soyutils.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/dashboard.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
+
 
 <script type="text/javascript"
 	src="https://www.gstatic.com/charts/loader.js"></script>
 <script type="text/javascript">
 	// Load the Visualization API and the controls package.
 	google.charts.load('current', {
-		'packages' : [ 'controls', 'corechart' ]
+		'packages' : [ 'controls', 'corechart','timeline','line' ]
 	});
 	google.charts.setOnLoadCallback(drawChart);
 </script>
@@ -40,13 +42,13 @@
 </head>
 <body data-ng-controller="moduleController">
 	<header class="w3-top" data-ng-style="{'background-color':'#336699'}">
-		<ul class="w3-navbar w3-large">
+		<ul class="w3-navbar w3-large w3-collapse">
 			<li><img class="w3-circle"
 				src="${pageContext.request.contextPath}/assets/images/winstream_min_logo.png"
 				alt="avatar" style="width: 30px"></li>
 			<li data-pd-title></li>
 			<li><a href="#" data-ng-click='showDashboard($event)'
-				class="tablink"><i class="fa fa-tachometer fa-fw"
+				class="tablink w3-pink"><i class="fa fa-tachometer fa-fw"
 					aria-hidden="true"></i>&nbsp;Dashboard</a></li>
 			<li><a href="#" data-ng-click='showConfiguration($event)'
 				class="tablink"><i class="fa fa-cog fa-fw" aria-hidden="true"></i>&nbsp;Configuration</a></li>
@@ -64,13 +66,12 @@
 					class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a></li>
 		</ul>
 	</header>
-	<div class='w3-container content-heightdiv' id="dashboard_div"
-		data-ng-show='showDashboardContainer'>
+	<div class='content-heightdiv'
+		id="dashboard_div" data-ng-show='showDashboardContainer'>
 		<div class='w3-row-padding'>
 			<script type="text/javascript">
 				document.write(dashboard.tiles.modules());
-			</script>
-			<script type="text/javascript">
+				document.write(dashboard.tiles.phasesMigrationPlan());
 				document.write(dashboard.tiles.phases());
 			</script>
 		</div>
@@ -80,41 +81,55 @@
 			</script>
 		</div>
 	</div>
-	<div class="w3-container w3-border content-heightdiv"
-		data-ng-show="showModuleContainer">
-		<div id="moduleType_filterId"></div>
-		<div id="dynamic_chartContainer"></div>
-		<span>Choose Chart Type:<select name="chartType"
-			data-ng-options="option.name for option in chartType.availableOptions track by option.id"
-			data-ng-model="chartType.selectedOption"
-			data-ng-change="drawDynamicChart(chartInfoValue)"></select></span>
+	<div id="modal01" class="w3-modal">
+		<div class="w3-modal-content w3-animate-zoom">
+			<header class="w3-container w3-teal">
+				<span
+					onclick="document.getElementById('modal01').style.display='none'"
+					class="w3-closebtn">&times;</span>
+				<h2>Chart Info</h2>
+			</header>
+			<div class="w3-container w3-padding-large" id="img01">
+				<div id="moduleType_filterId"></div>
+				<div id="dynamic_chartContainer"></div>
+				<span>Choose Chart Type:<select name="chartType"
+					data-ng-options="option.name for option in chartType.availableOptions track by option.id"
+					data-ng-model="chartType.selectedOption"
+					data-ng-change="drawDynamicChart(chartInfoValue)"></select></span>
+			</div>
+			<footer class="w3-container w3-teal">
+				<p></p>
+			</footer>
+		</div>
 	</div>
+<!-- 	<div class="w3-container w3-border content-heightdiv"
+		data-ng-show="showModuleContainer"></div> -->
 
 	<div class="content-heightdiv"
 		data-ng-show='showConfigurationContainer'>
 		<div class="w3-row-padding">
-			<div class="w3-col m8 w3-border w3-container">
+			<div class="w3-col m8 w3-border w3-container config-boxshow">
 				<table class="w3-table">
 					<caption>Dashboard Customization</caption>
 					<tr>
-						<td>Modules Data Left to Migrate</td>
+						<td>Modules Data Migration</td>
+						<td><button class="w3-btn w3-white w3-border" data-ng-click='showProperties()'>Configure</button></td>
+					</tr>
+					<tr>
+						<td>Phases Migration Plan</td>
 						<td><button class="w3-btn w3-white w3-border">Configure</button></td>
 					</tr>
 					<tr>
-						<td>Number of Phases Completed</td>
+						<td>Phases Data Migration</td>
 						<td><button class="w3-btn w3-white w3-border">Configure</button></td>
 					</tr>
 					<tr>
-						<td>Total Application Data Left to Migrate</td>
-						<td><button class="w3-btn w3-white w3-border">Configure</button></td>
-					</tr>
-					<tr>
-						<td>Time Taken to Migrate Each Phase</td>
+						<td>Data Failed in Each Phase</td>
 						<td><button class="w3-btn w3-white w3-border">Configure</button></td>
 					</tr>
 				</table>
 			</div>
-			<div class="w3-container w3-col m4 w3-border">
+			<div class="w3-container w3-col m4 w3-border config-boxshow" data-ng-show='showConfigProperties'>
 				<table class="w3-table">
 					<caption>Properties</caption>
 					<tr>
@@ -156,7 +171,8 @@
 					</tr>
 					<tr>
 						<td>Legend</td>
-						<td><select><option>Left</option><option>Right</option></select></td>
+						<td><select><option>Left</option>
+								<option>Right</option></select></td>
 					</tr>
 					<tr>
 						<td>Enable</td>
@@ -165,7 +181,10 @@
 
 					<tr>
 						<th colspan="2" style="text-align: center; padding-top: 20px;"><button
-								class="w3-btn w3-white w3-border">Save</button></th>
+								class="w3-btn w3-white w3-border" data-ng-click="showConfigProperties=!showConfigProperties">Save</button>
+								<button
+								class="w3-btn w3-white w3-border" data-ng-click="showConfigProperties=!showConfigProperties">Cancel</button>
+								</th>
 					</tr>
 
 				</table>
@@ -174,7 +193,6 @@
 		</div>
 
 	</div>
-
 
 	<footer class="w3-container w3-bottom"
 		data-ng-style="{'background-color':'#336699'}">Last Account
