@@ -9,8 +9,8 @@
 	<name>Data Migration Dashboard</name>
 	
 	<properties>
-		<spring.version>4.2.1.RELEASE</spring.version>
-		<spring.security.version>4.0.4.RELEASE</spring.security.version>
+		<spring.version>4.2.6.RELEASE</spring.version>
+		<spring.security.version>4.1.0.RELEASE</spring.security.version>
 	</properties>
 	
 	<dependencies>

@@ -1,11 +1,6 @@
 //defining the root angular module called datamigration and injecting the another angular module called moduleControllers
 var app = angular.module("datamigration", [ 'moduleControllers' ]);
-var dynamicChart
-var moduleChart
-var data, moduleData
-// Create a dashboard.
-var dashboard
-
+var dynamicChart, moduleChart, data, moduleData, dashboard;
 app.directive('pdTitle', function() {
 	return {
 		ristrict : 'AE',
@@ -13,39 +8,62 @@ app.directive('pdTitle', function() {
 	}
 });
 
+app.directive('draggable', function($document) {
+	  return function(scope, element, attr) {
+	    var startX = 0, startY = 0, x = 0, y = 0;
+	    element.css({
+	     position: 'relative',
+	     cursor: 'pointer'
+	    });
+	    element.on('mousedown', function(event) {
+	      // Prevent default dragging of selected content
+	      event.preventDefault();
+	      startX = event.screenX - x;
+	      startY = event.screenY - y;
+	      $document.on('mousemove', mousemove);
+	      $document.on('mouseup', mouseup);
+	    });
+
+	    function mousemove(event) {
+	      y = event.screenY - startY;
+	      x = event.screenX - startX;
+	      element.css({
+	        top: y + 'px',
+	        left:  x + 'px'
+
+	      });
+	    }
+
+	    function mouseup() {
+	      $document.off('mousemove', mousemove);
+	      $document.off('mouseup', mouseup);
+	    }
+	  };
+	});
+
+
 // creating the separate module for controllers
 var moduleControllers = angular.module('moduleControllers', []);
 
 // defining the module controller
 moduleControllers.controller("moduleController", function($scope, $log) {
-	//$scope.$log  = $log
+	
 	$scope.chartsData = {
-		"Modules" : [ [ 'Modules', 'Count' ], [ 'Proposal', 180000 ],
-				[ 'Quote', 1170 ], [ 'Order Enrichment', 2000 ],
-				[ 'OM', 20000 ], [ 'Provisioning', 3000 ], [ 'Billing', 4000 ],
-				[ 'Mediation', 5000 ], [ 'Service Qualification', 2300 ],
-				[ 'Other', 5000 ] ],
-		"Proposal" : [ [ 'Proposal Types', 'Count' ], [ 'Residential', 90000 ],
-				[ 'Enterprise', 30000 ], [ 'Wholesale', 60000 ] ],
-		"Residential" : [ [ 'Status', 'Count' ], [ 'Open', 10000 ],
-				[ 'InProgress', 50000 ], [ 'Completed', 30000 ] ],
-		"Enterprise" : [ [ 'Status', 'Count' ], [ 'Open', 1400 ],
-				[ 'InProgress', 25600 ], [ 'Completed', 3000 ] ],
-		"Wholesale" : [ [ 'Status', 'Count' ], [ 'Open', 26000 ],
-				[ 'InProgress', 4000 ], [ 'Completed', 30000 ] ],
-		"Phases" : [ [ 'Phases', 'Count' ], [ 'Phase1', 10000 ],
-				[ 'Phase2', 20000 ], [ 'Phase3', 30000 ] ],
-		"DataFailed" : [ [ 'Phases', 'Count' ], [ 'Phase1', 2000 ],
-				[ 'Phase2', 1500 ],['Phase3', 200 ] ],
-		"MigrationPlan":[['Phases','Name','Start','End'],['Phase1 Migration Plan','Phase1',new Date(2016,06,04),new Date(2016,06,28)],['Phase2 Migration Plan','Phase2',new Date(2016,07,01),new Date(2016,08,18)],['Phase3 Migration Plan','Phase3',new Date(2016,08,20),new Date(2016,09,28)],['Phase4 Migration Plan','Phase4',new Date(2016,10,01),new Date(2016,12,18)]]
+		"MigrationPlan" : [
+				[ 'Phases', 'Name', 'Start', 'End' ],
+				[ 'Phase1 Migration Plan', 'Phase1', new Date(2016, 06, 04),
+						new Date(2016, 06, 28) ],
+				[ 'Phase2 Migration Plan', 'Phase2', new Date(2016, 07, 01),
+						new Date(2016, 08, 18) ],
+				[ 'Phase3 Migration Plan', 'Phase3', new Date(2016, 08, 20),
+						new Date(2016, 09, 28) ],
+				[ 'Phase4 Migration Plan', 'Phase4', new Date(2016, 10, 01),
+						new Date(2016, 12, 18) ] ]
 
 	};
-	
 
 	$scope.createDashboard1 = function() {
-
-		moduleData = google.visualization.arrayToDataTable(
-				$scope.chartsData.Modules, false);
+		moduleData = google.visualization.arrayToDataTable($scope.chartsData.Modules, false);
 
 		dashboard = new google.visualization.Dashboard(document
 				.getElementById('dashboard_div'));
@@ -71,9 +89,7 @@ moduleControllers.controller("moduleController", function($scope, $log) {
 			'options' : {
 				'width' : 360,
 				'height' : 400,
-				'pieSliceText' : 'value',
 				'legend' : 'right',
-				'is3D' : true,
 				'title' : "How Much Data Left to Migrate in Each Module"
 			// 'chartArea': {'left': 25, 'top': 15, 'right': 0, 'bottom': 0}
 			}
@@ -123,7 +139,7 @@ moduleControllers.controller("moduleController", function($scope, $log) {
 		dashboard.draw(phasesData);
 
 	}
-	
+
 	$scope.createDashboard3 = function() {
 
 		dashboard = new google.visualization.Dashboard(document
@@ -148,7 +164,7 @@ moduleControllers.controller("moduleController", function($scope, $log) {
 				'width' : 320,
 				'height' : 400,
 				'title' : "How Much Data Failed in Each Phase",
-				'colors':['#ff3333']
+				'colors' : [ '#ff3333' ]
 			}
 		});
 		dashboard.bind(phasesFilter, dataFailedChart);
@@ -178,7 +194,9 @@ moduleControllers.controller("moduleController", function($scope, $log) {
 			'options' : {
 				'width' : 400,
 				'height' : 400,
-				'timeline': { showRowLabels: false}
+				'timeline' : {
+					showRowLabels : false
+				}
 			}
 		});
 		dashboard.bind(phasesFilter, dataFailedChart);
@@ -187,7 +205,7 @@ moduleControllers.controller("moduleController", function($scope, $log) {
 	}
 
 	$scope.drawModuleChart = function() {
-		
+
 		$scope.createDashboard1();
 		$scope.createDashboard2();
 		$scope.createDashboard3();
@@ -199,14 +217,11 @@ moduleControllers.controller("moduleController", function($scope, $log) {
 
 		if (!$scope.chartsData[value])
 			return;
-		if(!!evt)
+		if (!!evt)
 			$scope.activeTablink(evt)
-		
+
 		document.getElementById("modal01").style.display = "block";
 
-		//$scope.showConfigurationContainer = false;
-		//$scope.showDashboardContainer = false;
-		//$scope.showModuleContainer = true;
 		$scope.chartInfoValue = value;
 
 		// Create the data table.
@@ -347,6 +362,10 @@ moduleControllers.controller("moduleController", function($scope, $log) {
 		$scope.activeTablink(evt);
 	}
 	$scope.showDashboard = function(evt) {
+		var x = document.getElementsByClassName('custom-chart-transition');
+		for (i = 0; i < x.length; i++) {
+			x[i].style.display = 'block';
+		}
 		$scope.showConfigurationContainer = false;
 		$scope.showDashboardContainer = true;
 		$scope.activeTablink(evt);
@@ -361,10 +380,10 @@ moduleControllers.controller("moduleController", function($scope, $log) {
 		evt.currentTarget.className += " w3-pink";
 	}
 	$scope.showDashboardContainer = true;
-	
+
 	$scope.showConfigProperties = false;
-	
-	$scope.showProperties = function(){
+
+	$scope.showProperties = function() {
 		$scope.showConfigProperties = true
 	}
 });

@@ -1,40 +1,43 @@
+<!DOCTYPE html>
+
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
 	pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
+	
+
 <html data-ng-app="datamigration">
+
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Data Migration Dashboard</title>
+
 <link rel="shortcut icon"
-	href="${pageContext.request.contextPath}/assets/images/winstream_min_logo.png"
+	href="<c:url value='/assets/images/winstream_min_logo.png' />"
 	type="image/png">
 <link rel="stylesheet" href="http://www.w3schools.com/lib/w3.css">
 <link rel="stylesheet"
 	href="http://www.w3schools.com/lib/w3-theme-red.css">
 <link rel="stylesheet"
-	href="${pageContext.request.contextPath}/assets/css/font-awesome.min.css">
+	href="<c:url value='/assets/css/font-awesome.min.css'/>">
 <link rel="stylesheet"
 	href="${pageContext.request.contextPath}/assets/css/custom.css">
 
 <script
 	src="http://ajax.googleapis.com/ajax/libs/angularjs/1.4.8/angular.min.js"></script>
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/assets/js/gcharts.js"></script>
-<script type="text/javascript"
+<script src="${pageContext.request.contextPath}/assets/js/gcharts.js"></script>
+<script
 	src="${pageContext.request.contextPath}/assets/js/ag.application.js"></script>
 
-<script type="text/javascript"
-	src="${pageContext.request.contextPath}/assets/js/soyutils.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/soyutils.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/dashboard.js"></script>
 <script src="${pageContext.request.contextPath}/assets/js/app.js"></script>
+<script src="${pageContext.request.contextPath}/assets/js/websql.js"></script>
 
-
-<script type="text/javascript"
-	src="https://www.gstatic.com/charts/loader.js"></script>
-<script type="text/javascript">
+<script src="https://www.gstatic.com/charts/loader.js"></script>
+<script>
 	// Load the Visualization API and the controls package.
 	google.charts.load('current', {
-		'packages' : [ 'controls', 'corechart','timeline','line' ]
+		'packages' : [ 'controls', 'corechart', 'timeline', 'line' ]
 	});
 	google.charts.setOnLoadCallback(drawChart);
 </script>
@@ -62,12 +65,12 @@
 					<a href="#" data-ng-repeat="module in modules" class="tablink"
 						data-ng-click="drawDynamicChart(module.name,$event)">{{module.name}}</a>
 				</div></li>
-			<li><a href="${pageContext.request.contextPath}/logout"><i
+			<li><a href="<c:url value="/logout" />"><i
 					class="fa fa-sign-out" aria-hidden="true"></i>&nbsp;Logout</a></li>
 		</ul>
 	</header>
-	<div class='content-heightdiv'
-		id="dashboard_div" data-ng-show='showDashboardContainer'>
+	<div class='content-heightdiv' id="dashboard_div"
+		data-ng-show='showDashboardContainer'>
 		<div class='w3-row-padding'>
 			<script type="text/javascript">
 				document.write(dashboard.tiles.modules());
@@ -102,7 +105,7 @@
 			</footer>
 		</div>
 	</div>
-<!-- 	<div class="w3-container w3-border content-heightdiv"
+	<!-- 	<div class="w3-container w3-border content-heightdiv"
 		data-ng-show="showModuleContainer"></div> -->
 
 	<div class="content-heightdiv"
@@ -113,7 +116,8 @@
 					<caption>Dashboard Customization</caption>
 					<tr>
 						<td>Modules Data Migration</td>
-						<td><button class="w3-btn w3-white w3-border" data-ng-click='showProperties()'>Configure</button></td>
+						<td><button class="w3-btn w3-white w3-border"
+								data-ng-click='showProperties()'>Configure</button></td>
 					</tr>
 					<tr>
 						<td>Phases Migration Plan</td>
@@ -129,7 +133,8 @@
 					</tr>
 				</table>
 			</div>
-			<div class="w3-container w3-col m4 w3-border config-boxshow" data-ng-show='showConfigProperties'>
+			<div class="w3-container w3-col m4 w3-border config-boxshow"
+				data-ng-show='showConfigProperties'>
 				<table class="w3-table">
 					<caption>Properties</caption>
 					<tr>
@@ -181,10 +186,11 @@
 
 					<tr>
 						<th colspan="2" style="text-align: center; padding-top: 20px;"><button
-								class="w3-btn w3-white w3-border" data-ng-click="showConfigProperties=!showConfigProperties">Save</button>
-								<button
-								class="w3-btn w3-white w3-border" data-ng-click="showConfigProperties=!showConfigProperties">Cancel</button>
-								</th>
+								class="w3-btn w3-white w3-border"
+								data-ng-click="showConfigProperties=!showConfigProperties">Save</button>
+							<button class="w3-btn w3-white w3-border"
+								data-ng-click="showConfigProperties=!showConfigProperties">Cancel</button>
+						</th>
 					</tr>
 
 				</table>
