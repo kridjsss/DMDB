@@ -4,6 +4,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,10 +17,12 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class LoginController extends HttpServlet {
 	private static final long serialVersionUID = 1L;
-
+    private Logger logger = Logger.getLogger(LoginController.class.getName());
+    
 	@RequestMapping(value = { "/", "/home" }, method = RequestMethod.GET)
     public String homePage(ModelMap model) {
         model.addAttribute("greeting", "Hi, Welcome to mysite. ");
+        logger.info("Accessing the home page.");
         return "home";
     }
 	@RequestMapping(value = "/login", method = RequestMethod.GET)
