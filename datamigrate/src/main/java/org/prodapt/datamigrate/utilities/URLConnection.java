@@ -54,9 +54,9 @@ public class URLConnection {
 			logger.info("Response:"+response);
 			
 		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			logger.error("Exception in establish URL connection",e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			logger.error("Exception in establish URL connection",e);
 		}
 		return res;
 	}

@@ -1,25 +1,75 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
-    xmlns:context="http://www.springframework.org/schema/context"
-    xmlns:mvc="http://www.springframework.org/schema/mvc"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mvc="http://www.springframework.org/schema/mvc" xmlns:task="http://www.springframework.org/schema/task"
+	xmlns:util="http://www.springframework.org/schema/util" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
     http://www.springframework.org/schema/mvc http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd">
- 
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+    http://www.springframework.org/schema/task
+	http://www.springframework.org/schema/task/spring-task-4.0.xsd">
+
 	<context:component-scan base-package="org.prodapt.datamigrate.controller" />
 	<context:component-scan base-package="org.prodapt.datamigrate.springsecurity" />
-	
- 	<mvc:annotation-driven />
- 	
-	<bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
-		<property name="viewClass" value="org.springframework.web.servlet.view.JstlView"/>
+
+	<mvc:annotation-driven />
+
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="viewClass"
+			value="org.springframework.web.servlet.view.JstlView" />
 		<property name="prefix" value="/WEB-INF/views/" />
 		<property name="suffix" value=".jsp" />
 	</bean>
- 
+
 	<mvc:resources mapping="/assets/images/**" location="/assets/images/" />
 	<mvc:resources mapping="/assets/css/**" location="/assets/css/" />
 	<mvc:resources mapping="/assets/fonts/**" location="/assets/fonts/" />
 	<mvc:resources mapping="/assets/js/**" location="/assets/js/" />
-	 
+
+	<!-- For times when you just need to invoke a method on a specific object -->
+	<bean id="jobDetail"
+		class="org.springframework.scheduling.quartz.MethodInvokingJobDetailFactoryBean">
+		<property name="targetObject" ref="myJob" />
+		<property name="targetMethod" value="test" />
+		<property name="concurrent" value="false" />
+	</bean>
+	<bean id="myJob" class="org.prodapt.datamigrate.jobs.MyJob"></bean>
+
+	<bean id="simpleTrigger"
+		class="org.springframework.scheduling.quartz.SimpleTriggerFactoryBean">
+		<!-- see the example of method invoking job above -->
+		<property name="jobDetail" ref="jobDetail" />
+		<!-- 10 seconds -->
+		<property name="startDelay" value="10000" />
+		<!-- repeat every 50 seconds -->
+		<property name="repeatInterval" value="50000" />
+	</bean>
+
+	<bean class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				<ref bean="simpleTrigger" />
+			</list>
+		</property>
+	</bean>
+	
+	<bean id="mailSender" class="org.springframework.mail.javamail.JavaMailSenderImpl">
+		<property name="host" value="smtp.gmail.com" />
+		<property name="username" value="krishna.reddy3346@gmail.com" />
+		<property name="password" value="08121a1564" />
+ 
+		<!-- The name of the property, following JavaBean naming conventions -->
+		<property name="javaMailProperties">
+		       <props>  
+              <prop key="mail.smtp.auth">true</prop>  
+              <prop key="mail.smtp.socketFactory.port">465</prop>  
+              <prop key="mail.smtp.socketFactory.class">javax.net.ssl.SSLSocketFactory</prop>  
+              <prop key="mail.smtp.port">465</prop>  
+        </props>  
+		
+		</property>
+	</bean>
+	<bean id="sendMailBean" class="org.prodapt.datamigrate.utilities.MailHandler">
+	<property name="mailSender" ref="mailSender" />
+</bean>
 </beans>
