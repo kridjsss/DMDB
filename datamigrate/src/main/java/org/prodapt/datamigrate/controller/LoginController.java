@@ -9,6 +9,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
 import org.apache.velocity.app.VelocityEngine;
+import org.prodapt.datamigrate.model.User;
 import org.prodapt.datamigrate.utilities.MailHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 @Controller
 public class LoginController extends HttpServlet {
@@ -72,6 +74,15 @@ public class LoginController extends HttpServlet {
 		model.addAttribute("user", getPrincipal());
 		return "accessDenied";
 	}
+	
+//	@RequestMapping(value="/getTestUser",method = RequestMethod.GET)
+//	public @ResponseBody User getUser(){
+//		User user = new User();
+//		user.setFirstName("Krishna");
+//		user.setLastName("reddy");
+//		user.setUserName("admin");
+//		return user;
+//	}
 
 	private String getPrincipal() {
 		String userName = null;

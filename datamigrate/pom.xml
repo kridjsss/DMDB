@@ -16,6 +16,7 @@
 		<jstl.version>1.2</jstl.version>
 		<mail.version>1.4.7</mail.version>
 		<servlet.version>3.0.1</servlet.version>
+		<hibernate.version>4.3.11.Final</hibernate.version>
 	</properties>
 
 	<dependencies>
@@ -44,7 +45,11 @@
 			<artifactId>spring-webmvc</artifactId>
 			<version>${spring.version}</version>
 		</dependency>
-
+ <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>${spring.version}</version>
+        </dependency>
 		<!-- Spring Security -->
 		<dependency>
 			<groupId>org.springframework.security</groupId>
@@ -57,7 +62,11 @@
 			<artifactId>spring-security-config</artifactId>
 			<version>${spring.security.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-taglibs</artifactId>
+			<version>${spring.security.version}</version>
+		</dependency>
 		<!-- servlet for container -->
 		<dependency>
 			<groupId>javax.servlet</groupId>
@@ -103,16 +112,51 @@
 			<artifactId>velocity</artifactId>
 			<version>1.7</version>
 		</dependency>
- 		<!-- http://mvnrepository.com/artifact/org.apache.velocity/velocity-tools -->
-       <dependency>
-           <groupId>org.apache.velocity</groupId>
-           <artifactId>velocity-tools</artifactId>
-           <version>2.0</version>
-       </dependency>
+		<!-- http://mvnrepository.com/artifact/org.apache.velocity/velocity-tools -->
+		<dependency>
+			<groupId>org.apache.velocity</groupId>
+			<artifactId>velocity-tools</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<!-- http://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+		<dependency>
+			<groupId>org.codehaus.jackson</groupId>
+			<artifactId>jackson-mapper-asl</artifactId>
+			<version>1.9.13</version>
+		</dependency>
+		<!-- http://mvnrepository.com/artifact/com.fasterxml.jackson.core/jackson-databind -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.core</groupId>
+			<artifactId>jackson-databind</artifactId>
+			<version>2.7.4</version>
+		</dependency>
+		<!-- Hibernate -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-core</artifactId>
+			<version>${hibernate.version}</version>
+		</dependency>
+		<!-- http://mvnrepository.com/artifact/org.hibernate/hibernate-validator -->
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-validator</artifactId>
+			<version>5.2.4.Final</version>
+		</dependency>
+		<!-- http://mvnrepository.com/artifact/mysql/mysql-connector-java -->
+		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>6.0.2</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>
 		<finalName>datamigrate</finalName>
 	</build>
 
+	<organization>
+		<name>Prodapt</name>
+		<url>http://www.prodapt.com</url>
+	</organization>
 </project>

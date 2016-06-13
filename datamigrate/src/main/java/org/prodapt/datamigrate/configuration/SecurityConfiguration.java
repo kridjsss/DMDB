@@ -1,4 +1,4 @@
-package org.prodapt.datamigrate.springsecurity;
+package org.prodapt.datamigrate.configuration;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
